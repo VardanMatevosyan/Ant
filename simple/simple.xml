@@ -1,0 +1,42 @@
+<project name="Hello" default="run" basedir=".">
+
+    <property name="home.src" location="src"/>
+    <property name="dest.src" location="target"/>
+    <property name="destMain.src" value="${dest.src}\classes"/>
+    <property name="package.src" value="ru.matevosyan"/>
+
+    <target name="clean">
+        <delete dir="${dest.src}"/>
+    </target>
+
+    <target name="createDestDir" depends="clean">
+        <mkdir dir="${destMain.src}">
+        </mkdir>
+    </target>
+
+    <target name="compile" depends="createDestDir, clean">
+        <javac srcdir="${home.src}" destdir="${destMain.src}" includeantruntime="false">
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile, createDestDir, clean">
+        <echo>Make jar file</echo>
+        <jar destfile="${dest.src}/simple.jar">
+            <manifest>
+                <attribute name="Main-Class" value="${package.src}.Main"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+
+            <fileset dir="${destMain.src}">
+                <include name="**/*.class"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar, compile, createDestDir, clean">
+        <!--<java classpath="${destMain.src}" classname="${package.src}.Main">-->
+        <!--</java>-->
+        <java jar="${dest.src}/simple.jar" fork="true"/>
+    </target>
+
+</project>
